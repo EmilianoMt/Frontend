@@ -1,9 +1,15 @@
+import { CatalogGrid } from "./components/CatalogGrid";
+import { Hero } from "./components/Hero";
+import { PromoSection } from "./components/PromoSection";
+import { Team } from "./components/Team";
+
 export default function Home() {
   return (
     <>
-      <div className="flex min-h-screen flex-col items-center justify-between p-24">
-        <h1 className="text-4xl font-bold">Configuracion Inicial!</h1>
-      </div>
+      <Hero/>
+      <CatalogGrid/>
+      <PromoSection/>
+      <Team/>
     </>
   );
 }
