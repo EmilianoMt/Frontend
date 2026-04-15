@@ -9,7 +9,7 @@ export const Navbar = () => {
           Kyber <span className="text-brand-accent">Cars</span>
         </Link>
 
-        <div className="hidden md:flex space-x-8 text-sm font-medium">
+        <div className="hidden md:flex space-x-8 text-sm font-medium items-center">
           <Link href="/" className="hover:text-brand-light transition-colors">
             Inicio
           </Link>
