@@ -12,7 +12,7 @@ Esta es la interfaz de usuario de la plataforma de exhibición automotriz. Desar
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 * **Framework:** Next.js 
 * **Estilos:** Tailwind CSS
 * **Consumo de API:** Axios 
