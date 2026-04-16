@@ -2,7 +2,7 @@
 export const dynamic = "force-dynamic";
 
 import { CarFront, Upload, ShieldCheck } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 type BrandItem = {
@@ -13,7 +13,7 @@ type BrandItem = {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-export default function AdminCatalogUpdatePage() {
+function AdminCatalogUpdateContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -298,5 +298,21 @@ export default function AdminCatalogUpdatePage() {
         </article>
       </section>
     </main>
+  );
+}
+
+export default function AdminCatalogUpdatePage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(31,191,146,0.14),transparent_35%),linear-gradient(180deg,#112E40_0%,#0f2938_100%)] px-6 py-10">
+          <section className="container mx-auto">
+            <p className="text-white/90">Cargando formulario...</p>
+          </section>
+        </main>
+      }
+    >
+      <AdminCatalogUpdateContent />
+    </Suspense>
   );
 }
