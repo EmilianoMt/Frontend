@@ -3,7 +3,7 @@ import Image from 'next/image';
 export const Team = () => {
   const teamMembers = [
     { name: 'Asesor Experto', role: 'Ventas Especializadas', image: '/smokey.png' },
-    { name: 'Soporte Técnico', role: 'Mantenimiento Certificado', image: '/patrick.jpg' },
+    { name: 'Soporte Técnico', role: 'Mantenimiento Certificado', image: '/Patrick.jpg' },
     { name: 'Atención al Cliente', role: 'Post-Venta y Garantías', image: '/tony.jpg' },
   ];
 
