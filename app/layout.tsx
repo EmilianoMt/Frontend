@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Catálogo Automotriz",
   description: "Plataforma de exhibición automotriz - Evaluación Técnica",
+  icons: {
+    icon: "/car.png",
+  },
 };
 
 export default function RootLayout({

@@ -16,7 +16,7 @@ export const Navbar = () => {
     <nav className="bg-brand-dark text-white py-4 px-6 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/home" className="text-xl font-bold tracking-tight">
-          Kyber <span className="text-brand-accent">Cars</span>
+          KYBER <span className="text-brand-accent">CARS</span>
         </Link>
 
         <div className="hidden md:flex space-x-8 text-sm font-medium items-center">

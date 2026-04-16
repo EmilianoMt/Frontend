@@ -129,7 +129,6 @@ export default function AdminCatalogUpdatePage() {
           year: yearNumber,
           price: priceNumber,
           brandId: brandIdNumber,
-          isAviable: isAvailable === "true",
         }),
       });
 
