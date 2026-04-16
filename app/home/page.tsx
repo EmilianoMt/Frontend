@@ -4,7 +4,7 @@ import { PromoSection } from "../components/PromoSection";
 import { Team } from "../components/Team";
 
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       <Hero/>
