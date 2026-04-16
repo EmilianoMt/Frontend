@@ -13,6 +13,7 @@ export const CatalogGrid = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [yearFilter, setYearFilter] = useState<"all" | "before2020" | "after2020">("all");
   const [vehicleToDelete, setVehicleToDelete] = useState<VehicleItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
@@ -141,6 +142,20 @@ export const CatalogGrid = () => {
     }
   };
 
+  const filteredVehicles = vehicles.filter((vehicle) => {
+    if (yearFilter === "all") {
+      return true;
+    }
+
+    const year = vehicle.year ?? 0;
+
+    if (yearFilter === "before2020") {
+      return year < 2020;
+    }
+
+    return year >= 2020;
+  });
+
   return (
     <section className="py-24 container mx-auto px-6">
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
@@ -148,7 +163,34 @@ export const CatalogGrid = () => {
           <h2 className="text-brand-accent font-bold tracking-widest uppercase text-sm mb-2">Nuestro Inventario</h2>
           <p className="text-3xl md:text-4xl font-extrabold text-brand-dark">Vehículos Disponibles</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 justify-end">
+          <div className="flex items-center rounded-full bg-white border border-brand-bg shadow-sm overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setYearFilter("before2020")}
+              className={
+                "px-4 py-2 text-sm font-bold transition-colors " +
+                (yearFilter === "before2020"
+                  ? "bg-brand-primary text-white"
+                  : "text-brand-dark hover:bg-brand-bg/50")
+              }
+            >
+              Antes del 2020
+            </button>
+            <button
+              type="button"
+              onClick={() => setYearFilter("after2020")}
+              className={
+                "px-4 py-2 text-sm font-bold transition-colors border-l border-brand-bg " +
+                (yearFilter === "after2020"
+                  ? "bg-brand-primary text-white"
+                  : "text-brand-dark hover:bg-brand-bg/50")
+              }
+            >
+              Después del 2020
+            </button>
+          </div>
+
           {isAdmin ? (
             <button
               type="button"
@@ -161,18 +203,39 @@ export const CatalogGrid = () => {
         </div>
       </div>
 
+      <div className="mb-6 flex items-center gap-3 text-sm text-brand-dark/70">
+        <button
+          type="button"
+          onClick={() => setYearFilter("all")}
+          className={
+            "underline underline-offset-4 transition-colors " +
+            (yearFilter === "all" ? "text-brand-primary font-bold" : "hover:text-brand-dark")
+          }
+        >
+          Ver todos
+        </button>
+        <span>·</span>
+        <span>
+          {yearFilter === "before2020"
+            ? "Mostrando vehículos antes del 2020"
+            : yearFilter === "after2020"
+              ? "Mostrando vehículos desde 2020 en adelante"
+              : "Sin filtro aplicado"}
+        </span>
+      </div>
+
       {loading ? (
         <p className="text-brand-dark/70">Cargando vehículos...</p>
       ) : null}
 
       {error ? <p className="text-red-600 font-medium">{error}</p> : null}
 
-      {!loading && !error && vehicles.length === 0 ? (
+      {!loading && !error && filteredVehicles.length === 0 ? (
         <p className="text-brand-dark/70">No hay vehículos disponibles por el momento.</p>
       ) : null}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {vehicles.map((vehicle) => (
+        {filteredVehicles.map((vehicle) => (
           <VehicleCard
             key={vehicle.id ?? vehicle.model}
             vehicle={vehicle}
