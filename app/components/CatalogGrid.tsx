@@ -1,6 +1,146 @@
-import { VehicleCard } from "./VehicleCard";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { VehicleCard, type VehicleItem } from "./VehicleCard";
+import { getRoleFromToken } from "@/lib/auth";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export const CatalogGrid = () => {
+  const router = useRouter();
+  const [vehicles, setVehicles] = useState<VehicleItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState<VehicleItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      if (!API_URL) {
+        setError("Falta configurar NEXT_PUBLIC_API_URL.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(API_URL + "/vehicles", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("No se pudieron cargar los vehículos.");
+        }
+
+        const data = (await response.json()) as unknown;
+        const list = Array.isArray(data)
+          ? data
+          : typeof data === "object" && data !== null && "data" in data
+            ? (data as { data: VehicleItem[] }).data
+            : [];
+
+        setVehicles(Array.isArray(list) ? list : []);
+      } catch (requestError) {
+        const message =
+          requestError instanceof Error
+            ? requestError.message
+            : "Error inesperado al cargar el catálogo.";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setIsAdmin(false);
+      return;
+    }
+
+    setIsAdmin(getRoleFromToken(token) === "ADMIN");
+  }, []);
+
+  const handleEdit = (vehicle: VehicleItem) => {
+    const params = new URLSearchParams();
+
+    if (vehicle.id !== undefined) {
+      params.set("id", String(vehicle.id));
+    }
+
+    params.set("model", vehicle.model);
+    if (vehicle.year !== undefined) {
+      params.set("year", String(vehicle.year));
+    }
+    if (vehicle.price !== undefined) {
+      params.set("price", String(vehicle.price));
+    }
+    if (vehicle.isAvailable !== undefined) {
+      params.set("isAvailable", String(vehicle.isAvailable));
+    }
+    if (vehicle.brandId !== undefined) {
+      params.set("brandId", String(vehicle.brandId));
+    }
+
+    router.push("/home/admin-catalog/update?" + params.toString());
+  };
+
+  const handleDelete = async () => {
+    if (!vehicleToDelete?.id) {
+      setDeleteError("No se pudo identificar el vehículo a eliminar.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setDeleteError("Tu sesión expiró. Inicia sesión de nuevo.");
+      return;
+    }
+
+    setDeleteError("");
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(API_URL + "/vehicles/" + vehicleToDelete.id, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          router.push("/login");
+          return;
+        }
+        if (response.status === 403) {
+          throw new Error("No tienes permisos para eliminar vehículos.");
+        }
+        throw new Error("No se pudo eliminar el vehículo.");
+      }
+
+      setVehicles((prev) => prev.filter((item) => item.id !== vehicleToDelete.id));
+      setVehicleToDelete(null);
+    } catch (deleteRequestError) {
+      const message =
+        deleteRequestError instanceof Error
+          ? deleteRequestError.message
+          : "Error inesperado al eliminar el vehículo.";
+      setDeleteError(message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <section className="py-24 container mx-auto px-6">
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
@@ -8,16 +148,75 @@ export const CatalogGrid = () => {
           <h2 className="text-brand-accent font-bold tracking-widest uppercase text-sm mb-2">Nuestro Inventario</h2>
           <p className="text-3xl md:text-4xl font-extrabold text-brand-dark">Vehículos Disponibles</p>
         </div>
-        <button className="text-brand-primary font-bold border-b-2 border-brand-primary pb-1 hover:text-brand-accent hover:border-brand-accent transition-all">
-          Ver todos los modelos
-        </button>
+        <div className="flex items-center gap-3">
+          {isAdmin ? (
+            <button
+              type="button"
+              onClick={() => router.push("/home/admin-catalog")}
+              className="bg-brand-primary text-white px-4 py-2 rounded-lg font-bold hover:bg-brand-accent transition-colors"
+            >
+              Agregar vehículo
+            </button>
+          ) : null}
+        </div>
       </div>
 
+      {loading ? (
+        <p className="text-brand-dark/70">Cargando vehículos...</p>
+      ) : null}
+
+      {error ? <p className="text-red-600 font-medium">{error}</p> : null}
+
+      {!loading && !error && vehicles.length === 0 ? (
+        <p className="text-brand-dark/70">No hay vehículos disponibles por el momento.</p>
+      ) : null}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {[1, 2, 3, 4, 5, 6].map((item) => (
-          <VehicleCard key={item} />
+        {vehicles.map((vehicle) => (
+          <VehicleCard
+            key={vehicle.id ?? vehicle.model}
+            vehicle={vehicle}
+            isAdmin={isAdmin}
+            onEdit={handleEdit}
+            onDelete={(item) => {
+              setDeleteError("");
+              setVehicleToDelete(item);
+            }}
+          />
         ))}
       </div>
+
+      {vehicleToDelete ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-brand-bg">
+            <h3 className="text-xl font-black text-brand-dark">Confirmar eliminación</h3>
+            <p className="mt-2 text-brand-dark/70">
+              ¿Seguro que deseas eliminar el vehículo <strong>{vehicleToDelete.model}</strong>?
+            </p>
+
+            {deleteError ? <p className="mt-3 text-sm text-red-600 font-medium">{deleteError}</p> : null}
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setVehicleToDelete(null)}
+                className="px-4 py-2 rounded-lg border border-brand-bg text-brand-dark hover:bg-brand-bg/30 transition-colors"
+                disabled={isDeleting}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 transition-colors disabled:opacity-60"
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 };
