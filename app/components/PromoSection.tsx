@@ -2,16 +2,24 @@ export const PromoSection = () => {
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-[300px] md:h-[400px]">
-          
+        <div className="mb-12 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-brand-primary mb-3">
+            Diferenciadores
+          </p>
+          <h2 className="text-3xl md:text-4xl font-black text-brand-dark">
+            Porque somos mejores
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 h-75 md:h-100">
           <div className="bg-brand-primary rounded-3xl flex flex-col justify-end p-8 text-white hover:scale-[1.02] transition-transform cursor-pointer">
-            <h4 className="text-2xl font-bold">Seminuevos</h4>
-            <p className="text-sm opacity-80">Calidad garantizada</p>
+            <h4 className="text-2xl font-bold">Selección curada</h4>
+            <p className="text-sm opacity-80">Solo vehículos con calidad verificada y respaldo real.</p>
           </div>
 
           <div className="bg-brand-accent rounded-3xl flex flex-col justify-end p-8 text-brand-dark hover:scale-[1.02] transition-transform cursor-pointer">
-            <h4 className="text-2xl font-bold">Nuevos</h4>
-            <p className="text-sm opacity-80">Modelos 2026</p>
+            <h4 className="text-2xl font-bold">Asesoría especializada</h4>
+            <p className="text-sm opacity-80">Te guiamos con atención clara para elegir mejor.</p>
           </div>
 
           <div 
@@ -22,7 +30,12 @@ export const PromoSection = () => {
               backgroundSize: '40px 40px',
               opacity: 0.8
             }}
-          ></div>
+          >
+            <div className="h-full flex flex-col justify-end p-8 text-white">
+              <h4 className="text-2xl font-bold">Transparencia total</h4>
+              <p className="text-sm opacity-80">Información, precio y disponibilidad sin sorpresas.</p>
+            </div>
+          </div>
 
           <div 
             className="rounded-3xl hover:scale-[1.02] transition-transform cursor-pointer border-4 border-brand-primary"
@@ -31,8 +44,12 @@ export const PromoSection = () => {
               backgroundImage: 'linear-gradient(-45deg, #025949 25%, transparent 25%, transparent 50%, #025949 50%, #025949 75%, transparent 75%, transparent)',
               backgroundSize: '30px 30px',
             }}
-          ></div>
-
+          >
+            <div className="h-full flex flex-col justify-end p-8 text-brand-dark bg-white/70">
+              <h4 className="text-2xl font-bold">Acompañamiento total</h4>
+              <p className="text-sm opacity-80">Soporte antes, durante y después de la compra.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>

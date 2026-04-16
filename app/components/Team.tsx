@@ -1,8 +1,10 @@
+import Image from 'next/image';
+
 export const Team = () => {
   const teamMembers = [
-    { name: 'Asesor Experto', role: 'Ventas Especializadas' },
-    { name: 'Soporte Técnico', role: 'Mantenimiento Certificado' },
-    { name: 'Atención al Cliente', role: 'Post-Venta y Garantías' },
+    { name: 'Asesor Experto', role: 'Ventas Especializadas', image: '/smokey.png' },
+    { name: 'Soporte Técnico', role: 'Mantenimiento Certificado', image: '/patrick.jpg' },
+    { name: 'Atención al Cliente', role: 'Post-Venta y Garantías', image: '/tony.jpg' },
   ];
 
   return (
@@ -17,7 +19,13 @@ export const Team = () => {
           {teamMembers.map((member, index) => (
             <div key={index} className="flex flex-col items-center text-center group">
               <div className="w-40 h-40 bg-brand-dark rounded-full mb-6 border-4 border-brand-accent shadow-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110">
-                <div className="text-brand-light opacity-50 font-bold text-xs uppercase">Foto</div>
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  width={160}
+                  height={160}
+                  className="h-full w-full object-cover"
+                />
               </div>
               
               <h4 className="text-xl font-bold text-brand-dark">{member.name}</h4>

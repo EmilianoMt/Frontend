@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const Hero = () => {
   return (
     <section className="relative">
@@ -14,9 +16,12 @@ export const Hero = () => {
             tecnología y respaldo del mercado. Calidad garantizada en cada kilómetro.
           </p>
 
-          <button className="bg-brand-primary hover:bg-brand-accent text-white px-8 py-3 rounded-full font-bold transition-all transform hover:scale-105">
+          <Link
+            href="/home#catalogo"
+            className="inline-block bg-brand-primary hover:bg-brand-accent text-white px-8 py-3 rounded-full font-bold transition-all transform hover:scale-105"
+          >
             Explorar Catálogo
-          </button>
+          </Link>
         </div>
       </div>
 
