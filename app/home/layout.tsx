@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
+import { Footer } from "../components/Footer";
+import { Navbar } from "../components/Navbar";
 
 
 
@@ -19,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${inter.className} min-h-screen flex flex-col antialiased`}>
+        <Navbar />
         <main className="grow">
           {children}
         </main>
+        <Footer />
        
       </body>
     </html>
